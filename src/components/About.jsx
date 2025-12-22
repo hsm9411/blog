@@ -2,24 +2,18 @@ import React from 'react';
 
 function About() {
   return (
-    <section id="about" className="section-container">
-      <h2>About Me</h2>
-      <div className="about-content">
-        <div className="text-box">
-          <p>
-            새로운 기술을 배우는 것을 좋아하고, 문제를 해결할 때 즐거움을 느낍니다.
-            현재 React와 JavaScript를 중점적으로 학습하고 있습니다.
-          </p>
-        </div>
-        <div className="skills-box">
-          <h3>Skills</h3>
-          <div className="skill-tags">
-            <span>React</span>
-            <span>JavaScript</span>
-            <span>HTML/CSS</span>
-            <span>Git</span>
-            <span>Vite</span>
+    <section id="about" className="section-wrapper">
+      <div className="container">
+        <h2>About Me</h2>
+        <div className="about-content">
+          <div className="text-box">
+            <p>
+              안녕하세요! 사용자 경험을 최우선으로 생각하는 개발자입니다.
+              <br />
+              다크 모드와 반응형 디자인을 고려하여 깔끔한 웹을 만듭니다.
+            </p>
           </div>
+          {/* (Skills 부분은 그대로 두거나 필요하면 추가) */}
         </div>
       </div>
     </section>
