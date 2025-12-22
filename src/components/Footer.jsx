@@ -6,8 +6,8 @@ function Footer() {
       <p>Contact: myemail@example.com</p>
       <p>© 2025 Hong Gil Dong. All rights reserved.</p>
       <div className="social-links">
-        <a href="https://github.com/hsm9411" target="_blank">GitHub</a>
-        {/* 블로그 주소 등 추가 */}
+        {/* rel 속성 추가됨 */}
+        <a href="https://github.com/hsm9411" target="_blank" rel="noopener noreferrer">GitHub</a>
       </div>
     </footer>
   );

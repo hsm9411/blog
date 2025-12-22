@@ -13,9 +13,8 @@ const projects = [
     title: "투두 리스트 (Todo List)",
     description: "기본적인 CRUD 기능을 구현한 할 일 관리 앱입니다.",
     tech: ["JavaScript", "LocalStorage"],
-    link: "#" // 나중에 링크 채워넣기
+    link: "#"
   },
-  // 여기에 프로젝트를 계속 추가하면 됩니다.
 ];
 
 function Projects() {
@@ -33,7 +32,8 @@ function Projects() {
                   <span key={index} className="tech-badge">{t}</span>
                 ))}
               </div>
-              <a href={project.link} target="_blank" className="project-link">
+              {/* rel 속성 추가됨 */}
+              <a href={project.link} target="_blank" rel="noopener noreferrer" className="project-link">
                 View Code →
               </a>
             </div>
