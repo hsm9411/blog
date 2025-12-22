@@ -1,0 +1,30 @@
+name: PR Lint & Build Check
+
+# 언제 실행할지 정의
+on:
+  pull_request:
+    branches: [ "main" ] # main 브랜치로 PR을 보낼 때만 실행
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      # 1. Lint 검사 (실패하면 여기서 멈춤)
+      - name: Run Lint
+        run: npm run lint
+
+      # 2. Build 테스트 (배포는 안 하지만, 빌드가 터지는지 확인)
+      - name: Run Build Test
+        run: npm run build
