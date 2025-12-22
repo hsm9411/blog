@@ -1,16 +1,50 @@
-# React + Vite
+# 📘 hasungmin's Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+안녕하세요! 프론트엔드 개발자를 꿈꾸는 하성민의 포트폴리오입니다.
+React와 GitHub Actions를 활용하여 제작되었으며, 저의 프로젝트 경험과 기술 스택을 소개합니다.
 
-Currently, two official plugins are available:
+## 🚀 배포 링크 (Live Demo)
+👉 **[https://hsm9411.github.io/blog/](https://hsm9411.github.io/blog/)**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🛠 기술 스택 (Tech Stack)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Frontend
+<img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=React&logoColor=black"/> <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=JavaScript&logoColor=black"/> <img src="https://img.shields.io/badge/Vite-646CFF?style=flat&logo=Vite&logoColor=white"/>
 
-## Expanding the ESLint configuration
+### Deployment & Tools
+<img src="https://img.shields.io/badge/GitHub%20Pages-222222?style=flat&logo=GitHub&logoColor=white"/> <img src="https://img.shields.io/badge/GitHub%20Actions-2088FF?style=flat&logo=github-actions&logoColor=white"/> <img src="https://img.shields.io/badge/Git-F05032?style=flat&logo=git&logoColor=white"/>
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 📝 프로젝트 소개 (Projects)
+
+### 1. [프로젝트 이름]
+> 간단한 한 줄 소개 (예: React로 만든 투두리스트)
+- **주요 기능:** 할 일 추가/삭제, 완료 표시, 로컬 스토리지 저장
+- **개발 기간:** 2024.01 ~ 2024.02
+- **GitHub:** [링크](레포지토리 주소)
+
+### 2. My Portfolio (현재 사이트)
+- **설명:** 저를 소개하는 반응형 웹 포트폴리오 사이트
+- **주요 기능:** 자기소개, 기술 스택 시각화, 프로젝트 갤러리
+
+---
+
+## 📂 폴더 구조 (Folder Structure)
+```
+src/
+├── components/      # 재사용 가능한 UI 컴포넌트 (Header, Footer, ProjectCard 등)
+├── pages/           # 페이지 단위 컴포넌트 (Home, About, Projects)
+├── assets/          # 이미지, 폰트 등 정적 파일
+├── App.jsx          # 메인 컴포넌트
+└── main.jsx         # 진입점 (Entry Point)
+```
+
+## 📞 Contact
+- **Email:** haeha2e@gmail.com
+- **GitHub:** [https://github.com/hsm9411](https://github.com/hsm9411)
+```
+
+---
