@@ -16,17 +16,16 @@
 
 ```mermaid
 graph LR
-    A[Notion DB<br/>(Content Writing)] -->|API Request| B[Node.js Script<br/>(ETL Process)]
-    B -->|Transform & Save| C[JSON Data<br/>(Local Storage)]
-    C -->|Build| D[React Application]
-    D -->|Deploy| E[GitHub Pages<br/>(Hosting)]
+    A[Notion DB] -->|API Request| B[Node.js ETL Script]
+    B -->|Transform & Save| C[JSON Data]
+    C -->|Build| D[React App]
+    D -->|Deploy| E[GitHub Pages]
 
     subgraph CI/CD Pipeline
         B
         C
         D
     end
-
 ```
 
 ---
