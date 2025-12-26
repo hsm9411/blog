@@ -3,6 +3,8 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: ["main"]
+  pull_request:
+    branches: ["main"]
 
 permissions:
   contents: read
@@ -14,7 +16,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # 1. 린트 검사 (이게 통과해야 아래 deploy가 실행됨)
+  # JOB 1: 린트 검사
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -33,12 +35,10 @@ jobs:
       - name: Run Lint
         run: npm run lint
 
-  # 2. 빌드 및 배포
-  deploy:
-    needs: lint # ★ 핵심: lint job이 성공해야 실행됨
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  # JOB 2: 빌드 (여기서 노션 데이터를 가져옵니다)
+  # 이 작업은 PR이든 Main이든 항상 실행됩니다.
+  build:
+    needs: lint
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -53,17 +53,32 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
+      # ★ 핵심: 빌드할 때 Secrets 주입
+      - name: Build (Fetch Notion Data)
         run: npm run build
+        env:
+          NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload artifact
+      # 빌드 결과물을 GitHub 아티팩트로 업로드 (배포 단계로 넘겨주기 위함)
+      - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: './dist'
 
+  # JOB 3: 배포 (실제 사이트에 올리기)
+  # ★ 핵심: 이 작업은 오직 'main' 브랜치일 때만 실행됩니다.
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' # PR에서는 이 단계가 스킵됩니다 (에러 방지)
+    
+    # 배포 환경 설정 (PR 단계에서는 이 설정 때문에 에러가 났던 것입니다)
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
