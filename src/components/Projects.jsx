@@ -1,38 +1,43 @@
 import React from 'react';
-
-const projects = [
-  {
-    id: 1,
-    title: "나의 포트폴리오 사이트",
-    description: "React와 GitHub Actions를 이용해 제작한 정적 웹사이트입니다.",
-    tech: ["React", "Vite", "CSS"],
-    link: "https://github.com/hsm9411/blog" 
-  },
-  {
-    id: 2,
-    title: "투두 리스트 (Todo List)",
-    description: "기본적인 CRUD 기능을 구현한 할 일 관리 앱입니다.",
-    tech: ["JavaScript", "LocalStorage"],
-    link: "#"
-  },
-];
+// 스크립트가 생성할 JSON 파일을 import 합니다.
+// (처음엔 파일이 없어서 에러처럼 보일 수 있지만, npm run dev 하면 생깁니다)
+import projectData from '../data/projects.json';
 
 function Projects() {
+  // 데이터가 없을 경우를 대비해 빈 배열 처리
+  const projects = projectData || [];
+
   return (
     <section id="projects" className="section-wrapper">
       <div className="container">
         <h2>Projects</h2>
+        
+        {/* 데이터가 비었을 때 안내 문구 */}
+        {projects.length === 0 && (
+          <p>등록된 프로젝트가 없습니다. (Notion 상태를 확인해주세요)</p>
+        )}
+
         <div className="project-grid">
           {projects.map((project) => (
             <div key={project.id} className="project-card">
+              {/* 커버 이미지가 있으면 표시 */}
+              {project.cover && (
+                <img 
+                  src={project.cover} 
+                  alt={project.title} 
+                  style={{ width: '100%', height: '150px', objectFit: 'cover', borderRadius: '4px' }}
+                />
+              )}
+              
               <h3>{project.title}</h3>
               <p>{project.description}</p>
+              
               <div className="tech-stack">
                 {project.tech.map((t, index) => (
-                  <span key={index} className="tech-badge">{t}</span>
+                  <span key={index} className="tech-badge">#{t}</span>
                 ))}
               </div>
-              {/* rel 속성 추가됨 */}
+              
               <a href={project.link} target="_blank" rel="noopener noreferrer" className="project-link">
                 View Code →
               </a>

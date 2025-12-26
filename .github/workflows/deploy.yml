@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # 1. 린트 검사 (이게 통과해야 아래 deploy가 실행됨)
+  # 1. 린트 검사
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -35,7 +35,7 @@ jobs:
 
   # 2. 빌드 및 배포
   deploy:
-    needs: lint # ★ 핵심: lint job이 성공해야 실행됨
+    needs: lint
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -53,8 +53,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # ★ Build 실행 (prebuild로 인해 여기서 fetch-notion.js가 실행됨)
+      # ★ 따라서 여기에 노션 키를 환경변수로 주입해야 함!
       - name: Build
         run: npm run build
+        env:
+          NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
