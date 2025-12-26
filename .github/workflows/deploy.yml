@@ -3,8 +3,20 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: ["main"]
+    # [수정됨] 아래 파일들만 변경되었을 때는 액션을 실행하지 않습니다.
+    paths-ignore:
+      - 'README.md'
+      - 'docs/**'
+      - 'LICENSE'
+      - '.gitignore'
   pull_request:
     branches: ["main"]
+    # [수정됨] PR 때도 문서 변경은 검사할 필요가 없으므로 무시합니다.
+    paths-ignore:
+      - 'README.md'
+      - 'docs/**'
+      - 'LICENSE'
+      - '.gitignore'
 
 permissions:
   contents: read
