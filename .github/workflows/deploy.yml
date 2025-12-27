@@ -17,6 +17,7 @@ on:
       - 'docs/**'
       - 'LICENSE'
       - '.gitignore'
+  workflow_dispatch: # 수동 버튼도 유지
 
 permissions:
   contents: read
