@@ -25,3 +25,6 @@ dist-ssr
 
 # (필수) 보안 관련 파일 (나중에 API 키 같은 거 쓸 때 중요)
 .env
+
+# Notion Data
+src/data/projects.json
