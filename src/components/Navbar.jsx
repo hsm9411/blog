@@ -4,13 +4,15 @@ import React from 'react';
 function Navbar() {
   return (
     <nav className="navbar">
-      {/* 이 div가 있어야 1200px 안쪽으로 내용이 모입니다 */}
-      <div className="navbar-container">
-        <div className="navbar-logo">My Portfolio</div>
-        <ul className="navbar-links">
-          <li><a href="#hero">Home</a></li>
-          <li><a href="#about">About</a></li>
+      <div className="nav-container">
+        {/* 로고 혹은 이름 */}
+        <a href="#hero" className="logo">Portfolio</a>
+        
+        <ul className="nav-links">
+          <li><a href="#about">Skills</a></li>
           <li><a href="#projects">Projects</a></li>
+          <li><a href="#experience">Experience</a></li>
+          <li><a href="#education">Education</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
       </div>
