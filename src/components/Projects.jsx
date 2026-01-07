@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import projectData from '../data/projects.json';
-
-// ▼ [변경] 아이콘 라이브러리 import
-import { FaGithub } from "react-icons/fa"; // 깃허브 아이콘
-import { MdClose } from "react-icons/md";  // 닫기(X) 아이콘
+import { FaGithub } from "react-icons/fa";
+import { MdClose } from "react-icons/md";
 
 function Projects() {
   const projects = projectData || [];
@@ -54,8 +52,6 @@ function Projects() {
                   <button className="btn-detail" onClick={() => openModal(project)}>
                     자세히 보기
                   </button>
-                  
-                  {/* ▼ [변경] 아이콘 컴포넌트 사용 */}
                   <a 
                     href={project.link} 
                     target="_blank" 
@@ -79,7 +75,6 @@ function Projects() {
             
             <div className="modal-header">
               <h2>{selectedProject.title}</h2>
-              {/* ▼ [변경] 닫기 버튼 아이콘 교체 */}
               <button className="close-btn" onClick={closeModal} aria-label="Close">
                 <MdClose />
               </button>
@@ -101,9 +96,9 @@ function Projects() {
                 rel="noreferrer" 
                 className="btn-github-compact"
               >
-                {/* ▼ [변경] 아이콘 컴포넌트 사용 */}
                 <FaGithub size={18} />
-                <span>GitHub Repository</span>
+                {/* ▼ [수정됨] 텍스트를 GitHub로 짧게 변경 */}
+                <span>GitHub</span>
               </a>
             </div>
 

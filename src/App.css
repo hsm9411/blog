@@ -4,11 +4,12 @@
 :root {
   --bg-color: #ffffff;
   --text-color: #333333;
-  --primary-color: #24292e; /* GitHub Black */
-  --accent-color: #4a90e2;  /* Highlight Blue */
+  --primary-color: #24292e; 
+  --accent-color: #4a90e2;  
   --card-bg: #ffffff;
   --border-color: #e0e0e0;
-  --navbar-bg: rgba(255, 255, 255, 0.9);
+  
+  --navbar-rgb: 255, 255, 255; 
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,7 +20,8 @@
     --accent-color: #64b5f6;
     --card-bg: #1e1e1e;
     --border-color: #333333;
-    --navbar-bg: rgba(18, 18, 18, 0.9);
+    /* 다크모드: 거의 검은색 (Dark Gray) */
+    --navbar-rgb: 18, 18, 18;
   }
 }
 
@@ -41,11 +43,10 @@ body {
   margin: 0; padding: 0; display: flex; flex-direction: column; text-align: left;
 }
 
-/* ▼ [수정 1] 가로 폭을 1050px로 줄여서 부담감 완화 */
 .container {
   width: 100%;
-  max-width: 1050px; /* 기존 1200px -> 1050px로 축소 */
-  margin: 0 auto;    /* 중앙 정렬 */
+  max-width: 1050px;
+  margin: 0 auto;
   padding: 0 20px;
 }
 
@@ -59,15 +60,50 @@ h2 {
 /* =========================================
    2. Navbar
    ========================================= */
+/* [2] .navbar 수정: 처음부터 끝까지 자연스럽게 사라지는 블러 */
 .navbar {
-  position: fixed; top: 0; left: 0; width: 100%; height: 70px;
-  background-color: var(--navbar-bg); backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--border-color); z-index: 1000;
-  display: flex; justify-content: center;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  /* 블러가 사라질 공간을 충분히 주기 위해 높이를 살짝 여유 있게 잡음 */
+  height: 100px; 
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  
+  /* 부모는 투명 */
+  background: transparent;
+  border-bottom: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  /* 실제 컨텐츠(링크 등)가 너무 아래로 처지지 않게 상단 패딩 조절 */
+  align-items: flex-start; 
+  padding-top: 20px; 
+}
+
+/* 배경 및 블러 레이어 */
+.navbar::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: -1;
+
+  /* 1. 배경색: 너무 투명하면 글자가 안 보이므로 적당한 농도(0.8) 설정 */
+  background: rgba(var(--navbar-rgb), 0.8);
+
+  /* 2. 블러: 적당히 부드럽게 */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  /* 3. 핵심: 0%부터 100%까지 멈춤 없이 쭉~ 사라지게 함 */
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+  
+  pointer-events: none;
 }
 
 .nav-container {
-  width: 100%; max-width: 1050px; /* container와 동일하게 맞춤 */
+  width: 100%; max-width: 1050px;
   height: 100%; margin: 0 auto; padding: 0 20px;
   display: flex; justify-content: space-between; align-items: center;
 }
@@ -78,7 +114,7 @@ h2 {
 .nav-links a:hover { opacity: 1; color: var(--accent-color); }
 
 /* =========================================
-   3. Hero Section (오른쪽으로 이동 배치)
+   3. Hero Section
    ========================================= */
 #hero {
   width: 100%; min-height: 100vh;
@@ -89,14 +125,8 @@ h2 {
 .hero-container {
   width: 100%; max-width: 1050px;
   margin: 0 auto; padding: 0 20px;
-  
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 5rem; /* 글자와 이미지 사이 간격을 넓혀서 중앙을 채움 */
-
-  /* ▼ [수정 2] 전체 덩어리를 오른쪽으로 밀어주는 패딩 추가 */
+  display: flex; flex-direction: row; align-items: center; justify-content: center;
+  gap: 5rem;
   padding-left: 140px; 
 }
 
@@ -108,13 +138,13 @@ h2 {
 .profile-img-wrapper { flex-shrink: 0; }
 .profile-img {
   width: 250px; height: auto; object-fit: cover;
-  border-radius: 0; /* 직각 */
+  border-radius: 0; 
   box-shadow: 15px 15px 0px rgba(0,0,0,0.1);
   border: 1px solid var(--border-color);
 }
 
 /* =========================================
-   4. Skills (2열 고정)
+   4. Skills (2열)
    ========================================= */
 .skills-grid {
   display: grid;
@@ -133,12 +163,12 @@ h2 {
 .skill-items li { margin-bottom: 0.6rem; opacity: 0.8; font-size: 0.95rem; }
 
 /* =========================================
-   5. Projects (3열 고정)
+   5. Projects (3열)
    ========================================= */
 .project-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 25px; /* 간격 살짝 조정 */
+  gap: 25px;
 }
 
 .project-card {
@@ -152,7 +182,11 @@ h2 {
 .card-img { width: 100%; height: 100%; object-fit: cover; }
 .card-body { padding: 1.5rem; flex-grow: 1; }
 .card-body h3 { margin: 0 0 1rem 0; font-size: 1.2rem; font-weight: 700; }
-.card-desc { opacity: 0.7; font-size: 0.95rem; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.card-desc {
+  opacity: 0.7; font-size: 0.95rem; line-height: 1.6;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  line-clamp: 3;
+}
 
 .card-bottom { padding: 0 1.5rem 1.5rem 1.5rem; margin-top: auto; }
 .tech-stack-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; padding-top: 15px; border-top: 1px dashed var(--border-color); }
@@ -213,7 +247,11 @@ h2 {
   display: flex; justify-content: center; align-items: center; z-index: 2000;
 }
 .modal-content {
-  background: var(--card-bg); width: 90%; max-width: 900px; height: 85vh;
+  background: var(--card-bg);
+  /* ▼ [3] 모달 너비 확장 (답답함 해소) */
+  width: 95%;          /* 모바일에서는 꽉 차게 */
+  max-width: 1100px;   /* PC에서는 메인 컨테이너(1050px)보다 살짝 넓거나 비슷하게 */
+  height: 85vh;
   border-radius: 16px; display: flex; flex-direction: column;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); overflow: hidden; border: 1px solid var(--border-color);
 }
@@ -250,7 +288,7 @@ footer { text-align: center; padding: 50px 20px; background-color: var(--bg-colo
   
   .hero-container {
     flex-direction: column; text-align: center; gap: 3rem;
-    padding-left: 20px; /* 모바일에서는 오른쪽 밀어내기 취소 (중앙 정렬) */
+    padding-left: 20px; 
   }
   .hero-text { text-align: center; }
   .profile-img { width: 200px; }
