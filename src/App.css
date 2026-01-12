@@ -1,272 +1,199 @@
 /* ==========================================================================
-   1. 변수 설정 (:root)
-   - 색상 및 네비게이션 RGB 값 정의 (투명도 조절용)
+   1. 변수 설정 & 테마 시스템
+   - 수정: CSS 미디어 쿼리를 제거하고, JS가 제어하는 클래스(.dark)에 전적으로 의존하도록 변경
    ========================================================================== */
 :root {
+  /* [기본값: 라이트 모드] */
   --bg-color: #ffffff;
-  --text-color: #333333;
-  --primary-color: #24292e; /* GitHub Black */
-  --accent-color: #4a90e2;  /* Highlight Blue */
+  --text-color: #1a1a1a;
+  --text-secondary: #555555;
+  --primary-color: #24292e;
+  --accent-color: #3b82f6;
   --card-bg: #ffffff;
-  --border-color: #e0e0e0;
+  --border-color: #e5e7eb;
   
-  /* 라이트모드 Navbar RGB */
+  /* 라이트모드 그림자 */
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+  /* 라이트모드 Navbar RGB (흰색) */
   --navbar-rgb: 255, 255, 255;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg-color: #121212;
-    --text-color: #f0f0f0;
-    --primary-color: #f0f6fc;
-    --accent-color: #64b5f6;
-    --card-bg: #1e1e1e;
-    --border-color: #333333;
-    
-    /* 다크모드 Navbar RGB */
-    --navbar-rgb: 18, 18, 18;
-  }
+/* [다크 모드] html 태그에 "dark" 클래스가 붙으면 이 변수들로 덮어씌워짐 */
+html.dark {
+  --bg-color: #121212;
+  --text-color: #f3f4f6;
+  --text-secondary: #9ca3af;
+  --primary-color: #f0f6fc;
+  --accent-color: #60a5fa;
+  --card-bg: #1e1e1e;
+  --border-color: #374151;
+  
+  /* 다크모드는 그림자 제거 (테두리나 색상으로 구분) */
+  --card-shadow: none;
+  --hover-shadow: none;
+
+  /* 다크모드 Navbar RGB (검은색) */
+  --navbar-rgb: 18, 18, 18;
 }
 
 /* ==========================================================================
-   2. 공통 레이아웃 (Container)
-   - width 제한 + margin: 0 auto 로 중앙 정렬 구현
+   2. 공통 레이아웃
    ========================================================================== */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.6;
+  transition: background-color 0.3s, color 0.3s; /* 테마 변경 부드럽게 */
+}
+
+#root { width: 100%; min-height: 100vh; display: flex; flex-direction: column; }
+
+/* 전체 폭을 1000px로 제한하여 안정감 제공 */
 .container {
   width: 100%;
-  max-width: 1100px; /* 너무 넓지 않게 가로폭 제한 */
-  margin: 0 auto;    /* 좌우 여백 자동 -> 중앙 정렬 */
-  padding: 0 20px;   /* 모바일 여백 */
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
-.section-wrapper {
-  padding: 100px 0;
-  width: 100%;
-}
+.section-wrapper { padding: 100px 0; width: 100%; }
 
 h2 {
-  text-align: center;
-  font-size: 2.2rem;
-  margin-bottom: 60px;
-  font-weight: 700;
-  color: var(--text-color);
+  text-align: center; font-size: 2.2rem; margin-bottom: 60px;
+  font-weight: 800; color: var(--text-color);
+  letter-spacing: -0.5px;
 }
 
 /* ==========================================================================
-   3. Navbar (Navigation)
-   - 마스킹 기법을 사용하여 아래로 갈수록 블러가 사라지는 효과 구현
+   3. Navbar
    ========================================================================== */
 .navbar {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%;
-  height: 90px; /* 블러가 사라질 공간 확보 */
-  z-index: 1000;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start; /* 내용은 위쪽에 배치 */
-  padding-top: 15px;
-  
-  background: transparent;
-  border: none;
-  backdrop-filter: none; /* 자체 블러 끄기 */
-  -webkit-backdrop-filter: none;
+  position: fixed; top: 0; left: 0; width: 100%; height: 80px; z-index: 1000;
+  display: flex; justify-content: center; align-items: flex-start; padding-top: 15px;
+  background: transparent; border: none; backdrop-filter: none; -webkit-backdrop-filter: none;
 }
 
-/* 배경 및 블러 레이어 (가상 요소) */
+/* 배경 블러 처리 (마스킹으로 아래쪽 자연스럽게 사라짐) */
 .navbar::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  z-index: -1;
-
-  /* 배경색 농도 조절 (0.8) */
-  background: rgba(var(--navbar-rgb), 0.8);
-  
-  /* 블러 효과 */
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-
-  /* [핵심] 0%에서 100%까지 끊김 없이 사라지는 마스크 */
+  content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -1;
+  background: rgba(var(--navbar-rgb), 0.85);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
   -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
   mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
   pointer-events: none;
 }
 
 .nav-container {
-  width: 100%;
-  max-width: 1100px; /* 본문과 라인 맞춤 */
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  width: 100%; max-width: 1000px;
+  display: flex; justify-content: space-between; align-items: center;
 }
 
 .logo { font-size: 1.5rem; font-weight: 800; color: var(--text-color); }
-.nav-links { display: flex; gap: 30px; }
-.nav-links a { font-weight: 600; color: var(--text-color); opacity: 0.7; }
+
+.nav-right { display: flex; align-items: center; gap: 30px; }
+.nav-links { display: flex; gap: 25px; }
+.nav-links a { 
+  font-weight: 600; color: var(--text-color); opacity: 0.7; transition: 0.2s; font-size: 0.95rem; 
+}
 .nav-links a:hover { opacity: 1; color: var(--accent-color); }
+
+/* 테마 토글 버튼 */
+.theme-toggle-btn {
+  background: transparent; border: 1px solid var(--border-color); color: var(--text-color);
+  padding: 8px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s ease;
+}
+.theme-toggle-btn:hover { background-color: var(--border-color); transform: rotate(15deg); }
 
 /* ==========================================================================
    4. Hero Section
-   - 수정: max-width와 gap을 줄여서 컨텐츠를 중앙으로 타이트하게 모음
    ========================================================================== */
 #hero {
-  width: 100%;
-  min-height: 100vh;
-  
-  /* Flexbox로 수직/수평 중앙 정렬 */
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 100%; min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
   background-color: var(--bg-color);
-  
-  /* 상단 네비게이션 바 높이(70px) 확보 */
-  padding-top: 70px;
-  
-  /* 시각적 중앙을 위해 하단에 약간의 여백 추가 */
-  padding-bottom: 5vh; 
+  padding-top: 80px;
 }
 
 .hero-container {
-  width: 100%;
-  
-  /* ▼ [핵심 수정 1] 950px -> 850px로 줄여서 양옆 퍼짐을 막고 중앙으로 모음 */
-  max-width: 850px; 
-  
-  margin: 0 auto;
-  padding: 0 20px;
-  
-  display: flex;
-  flex-direction: row;      
-  align-items: center;      
-  justify-content: center;  
-  
-  /* ▼ [핵심 수정 2] 글과 사진 사이 간격을 4rem -> 2.5rem으로 좁힘 */
-  gap: 2.5rem; 
-  
-  margin-top: 0; 
+  width: 100%; max-width: 900px;
+  margin: 0 auto; padding: 0 20px;
+  display: flex; flex-direction: row; align-items: center; justify-content: center;
+  gap: 3rem; padding-bottom: 5vh;
 }
 
-.hero-text {
-  flex: 1; 
-  text-align: left;
+.hero-text { flex: 1; text-align: left; }
+.hero-text h1 { 
+  font-size: 2.8rem; font-weight: 900; line-height: 1.2; margin-bottom: 20px; 
+  color: var(--text-color); letter-spacing: -1px;
 }
-
-.hero-text h1 {
-  font-size: 2.5rem; 
-  font-weight: 800;
-  line-height: 1.3;
-  margin-bottom: 20px;
-  color: var(--text-color);
+.hero-text p { 
+  font-size: 1.15rem; color: var(--text-secondary); margin-bottom: 1rem; font-weight: 400;
 }
-
-.hero-text p {
-  font-size: 1.1rem;
-  opacity: 0.8;
-  margin-bottom: 1rem;
-  line-height: 1.7;
-}
-
-.hero-text strong {
-  color: var(--accent-color);
-}
-
-.profile-img-wrapper {
-  flex-shrink: 0;
-}
+.hero-text strong { color: var(--accent-color); font-weight: 600; }
 
 .profile-img {
-  width: 240px; 
-  height: auto;
-  object-fit: cover;
-  border-radius: 0;
+  width: 240px; height: auto; object-fit: cover;
+  border-radius: 0; 
   box-shadow: 15px 15px 0px rgba(0,0,0,0.1);
   border: 1px solid var(--border-color);
 }
 
-/* --- 모바일 반응형 --- */
-@media (max-width: 900px) {
-  #hero {
-    padding-bottom: 50px; 
-  }
-
-  .hero-container {
-    flex-direction: column; 
-    text-align: center;
-    
-    /* 모바일에서는 세로 배치이므로 간격을 조금 더 줌 */
-    gap: 3rem;
-    
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-  
-  .hero-text {
-    text-align: center;
-  }
-  
-  .profile-img {
-    width: 200px; 
-  }
-}
-
 /* ==========================================================================
-   5. Skills Section (Grid Layout)
-   - PC 2열 고정
+   5. Skills & Projects
    ========================================================================== */
-.skills-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 2열 고정 */
-  gap: 30px;
-}
+.skills-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; }
 
 .skill-card {
-  background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
+  background-color: var(--card-bg); border: 1px solid var(--border-color);
   border-radius: 12px; padding: 2rem;
-  transition: transform 0.2s, border-color 0.2s;
+  box-shadow: var(--card-shadow);
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
 }
-.skill-card:hover { transform: translateY(-5px); border-color: var(--accent-color); }
-.skill-header { display: flex; align-items: center; gap: 12px; margin-bottom: 1.2rem; border-bottom: 2px solid var(--border-color); padding-bottom: 12px; }
-.skill-icon { font-size: 1.8rem; }
-.skill-header h3 { font-size: 1.2rem; font-weight: 700; margin: 0; }
-.skill-items { padding-left: 18px; }
-.skill-items li { margin-bottom: 0.6rem; opacity: 0.8; font-size: 0.95rem; }
+.skill-card:hover { 
+  transform: translateY(-5px); border-color: var(--accent-color);
+  box-shadow: var(--hover-shadow);
+}
+.skill-header { display: flex; align-items: center; gap: 12px; margin-bottom: 1.2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
+.skill-icon { font-size: 1.8rem; color: var(--accent-color); }
+.skill-header h3 { font-size: 1.2rem; font-weight: 700; margin: 0; color: var(--text-color); }
+.skill-items li { margin-bottom: 0.6rem; color: var(--text-secondary); font-size: 0.95rem; }
 
-/* ==========================================================================
-   6. Projects Section (Grid Layout)
-   - PC 3열 고정
-   ========================================================================== */
-.project-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3열 고정 */
-  gap: 25px;
-}
+/* Projects */
+.project-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
 
 .project-card {
-  background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
+  background-color: var(--card-bg); border: 1px solid var(--border-color);
   border-radius: 12px; overflow: hidden;
   display: flex; flex-direction: column; height: 100%;
-  transition: border-color 0.2s ease;
+  box-shadow: var(--card-shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
-.project-card:hover { border-color: var(--text-color); }
-
+.project-card:hover { 
+  transform: translateY(-3px); box-shadow: var(--hover-shadow); border-color: var(--text-color);
+}
 .card-img-wrapper { width: 100%; height: 180px; overflow: hidden; border-bottom: 1px solid var(--border-color); }
 .card-img { width: 100%; height: 100%; object-fit: cover; }
 .card-body { padding: 1.5rem; flex-grow: 1; }
-.card-body h3 { margin: 0 0 1rem 0; font-size: 1.2rem; font-weight: 700; }
-.card-desc {
-  opacity: 0.7; font-size: 0.95rem; line-height: 1.6;
-  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
-  line-clamp: 3;
+.card-body h3 { margin: 0 0 1rem 0; font-size: 1.3rem; font-weight: 700; color: var(--text-color); }
+.card-desc { 
+  color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; line-clamp: 3;
 }
 .card-bottom { padding: 0 1.5rem 1.5rem 1.5rem; margin-top: auto; }
 .tech-stack-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; padding-top: 15px; border-top: 1px dashed var(--border-color); }
-.tech-badge { background-color: var(--bg-color); border: 1px solid var(--border-color); padding: 4px 10px; border-radius: 4px; font-size: 0.85rem; font-weight: 600; }
+.tech-badge { 
+  background-color: var(--bg-color); border: 1px solid var(--border-color); 
+  padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary);
+}
 .card-actions { display: flex; justify-content: space-between; align-items: center; }
 
-/* 버튼 스타일 */
 .btn-detail {
   background: transparent; border: 1px solid var(--border-color); color: var(--text-color);
   padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.2s;
@@ -278,10 +205,10 @@ h2 {
   padding: 8px 18px; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 600;
   border: 1px solid var(--primary-color); transition: opacity 0.2s; line-height: 1;
 }
-.btn-github-compact:hover { opacity: 0.8; }
+.btn-github-compact:hover { opacity: 0.85; }
 
 /* ==========================================================================
-   7. Experience & Education
+   6. 나머지 섹션 (Timeline, Contact, Modal, Footer)
    ========================================================================== */
 .timeline-section { max-width: 800px; margin: 0 auto; }
 .timeline-card {
@@ -289,21 +216,19 @@ h2 {
   padding: 2rem; margin-bottom: 2rem; border-radius: 8px; transition: border-color 0.2s ease;
 }
 .timeline-card:hover { border-color: var(--text-color); border-left-color: var(--accent-color); }
-.timeline-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
-.timeline-role { font-size: 1.3rem; font-weight: 800; }
-.timeline-date { font-size: 0.95rem; opacity: 0.6; font-weight: 500; }
+.timeline-role { font-size: 1.3rem; font-weight: 800; color: var(--text-color); }
+.timeline-date { font-size: 0.95rem; color: var(--text-secondary); font-weight: 500; }
 .timeline-org { font-size: 1.1rem; color: var(--accent-color); display: block; margin-bottom: 12px; font-weight: 600; }
-.timeline-desc { opacity: 0.8; font-size: 1.05rem; }
+.timeline-desc { color: var(--text-secondary); font-size: 1.05rem; }
 
-/* ==========================================================================
-   8. Contact Form
-   ========================================================================== */
-.contact-desc { text-align: center; margin-bottom: 40px; opacity: 0.7; }
+/* Contact */
+.contact-desc { text-align: center; margin-bottom: 40px; color: var(--text-secondary); }
 .contact-form { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
 .form-group input, .form-group textarea {
   width: 100%; padding: 15px; background-color: var(--bg-color); border: 1px solid var(--border-color);
   border-radius: 8px; font-size: 1rem; color: var(--text-color); font-family: inherit;
 }
+.form-group input:focus, .form-group textarea:focus { border-color: var(--accent-color); outline: none; }
 .form-group textarea { height: 160px; resize: vertical; }
 .btn-send {
   background-color: var(--primary-color); color: var(--bg-color); padding: 15px;
@@ -311,19 +236,14 @@ h2 {
 }
 .btn-send:hover { opacity: 0.9; }
 
-/* ==========================================================================
-   9. Modal (상세보기)
-   - 크기 확대 (1100px) 및 Notion 스타일 Markdown 적용
-   ========================================================================== */
+/* Modal */
 .modal-overlay {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px);
   display: flex; justify-content: center; align-items: center; z-index: 2000;
 }
 .modal-content {
-  background: var(--card-bg);
-  /* [요청] 모달 크기 확대 */
-  width: 95%; max-width: 1100px; height: 85vh;
+  background: var(--card-bg); width: 95%; max-width: 1100px; height: 85vh;
   border-radius: 16px; display: flex; flex-direction: column;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); overflow: hidden; border: 1px solid var(--border-color);
 }
@@ -338,7 +258,7 @@ h2 {
 .modal-cover-img { width: 100%; max-height: 400px; object-fit: cover; border-radius: 8px; margin-bottom: 2rem; border: 1px solid var(--border-color); }
 .modal-footer { padding: 1.5rem 2rem; border-top: 1px solid var(--border-color); background-color: var(--bg-color); display: flex; justify-content: flex-end; }
 
-/* Markdown Styles (Notion-like) */
+/* Markdown Styles */
 .markdown-body { line-height: 1.8; color: var(--text-color); font-size: 1rem; text-align: left; }
 .markdown-body h1 { text-align: left; font-size: 1.8rem; margin-top: 1.5em; margin-bottom: 0.5em; font-weight: 700; color: var(--text-color); border-bottom: 1px solid var(--border-color); padding-bottom: 0.3em; }
 .markdown-body h2 { text-align: left; font-size: 1.5rem; margin-top: 1.4em; margin-bottom: 0.5em; font-weight: 600; color: var(--text-color); }
@@ -347,14 +267,13 @@ h2 {
 .markdown-body ul, .markdown-body ol { padding-left: 24px; margin-bottom: 1.2em; text-align: left; }
 .markdown-body code { background: rgba(135, 131, 120, 0.15); color: #EB5757; padding: 0.2em 0.4em; border-radius: 3px; font-family: monospace; font-size: 0.85em; }
 .markdown-body pre { background: #f7f6f3; padding: 16px; border-radius: 4px; overflow-x: auto; margin: 1.5em 0; }
-@media (prefers-color-scheme: dark) { .markdown-body pre { background: #2d2d2d; } }
+html.dark .markdown-body pre { background: #2d2d2d; }
 .markdown-body blockquote { border-left: 3px solid var(--text-color); padding-left: 1rem; font-style: italic; opacity: 0.8; }
 
-/* Footer */
-footer { text-align: center; padding: 50px 20px; background-color: var(--bg-color); border-top: 1px solid var(--border-color); color: var(--text-color); opacity: 0.7; font-size: 0.9rem; }
+footer { text-align: center; padding: 50px 20px; background-color: var(--bg-color); border-top: 1px solid var(--border-color); color: var(--text-secondary); font-size: 0.9rem; }
 
 /* ==========================================================================
-   10. Mobile Responsive
+   7. 모바일 반응형
    ========================================================================== */
 @media (max-width: 1024px) {
   .project-grid { grid-template-columns: repeat(2, 1fr); }
@@ -366,9 +285,10 @@ footer { text-align: center; padding: 50px 20px; background-color: var(--bg-colo
   
   .hero-container {
     flex-direction: column; text-align: center; gap: 3rem;
-    padding-left: 20px; /* 모바일: 중앙 정렬 */
+    padding-left: 20px; 
   }
   .hero-text { text-align: center; }
   .profile-img { width: 200px; }
-  .nav-links { gap: 15px; font-size: 0.9rem; }
+  .nav-links { display: none; } /* 모바일에서 메뉴 숨김 */
+  .nav-right { gap: 10px; }
 }
